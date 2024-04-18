@@ -19,7 +19,7 @@ class MocksHandler:
             if not exists(projects_folder_path):
                 raise ValueError(f'projects_folder_path {projects_folder_path} does not exists!')
             self.projects_folder_path = projects_folder_path
-        self.project_path = f'{projects_folder_path}/{project_name}'
+        self.project_path = join(projects_folder_path,project_name)
 
     def save_projects_folder_path(self, projects_folder_path:str):
         SaveFolderArgs(folder_path=projects_folder_path)
@@ -35,10 +35,10 @@ class MocksHandler:
         for root, dirs, files in walk(self.project_path):
             if 'mocks' in dirs and 'build' not in root:
                 return abspath(join(root, 'mocks'))
-        return self.project_path
+        raise ValueError(f'No mocks folder found in {self.project_path}')
 
     def get_filepath(self, filename_with_extension:str, is_dumping:bool = False):
-        filepath = f'{self.get_mocks_folder()}/{filename_with_extension}'
+        filepath = join(self.get_mocks_folder(), filename_with_extension)
         if not exists(filepath) and not is_dumping:
             raise ValueError(f'File {filepath} not found')
         return filepath

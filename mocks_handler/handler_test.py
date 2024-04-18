@@ -1,18 +1,22 @@
-from os import remove
-from os.path import dirname, join
+from os import remove, makedirs, removedirs
+from os.path import dirname, join, exists
 from pytest import raises, fixture
 from .handler import MocksHandler
 
-@fixture
-def mh():
-    # Inicialize a classe fixture aqui, se necessário
-    mh = MocksHandler(project_name='mocks_handler', projects_folder_path=dirname(__file__).replace('mocks_handler/mocks_handler', ''))
-    return mh
+mh = MocksHandler(project_name='mocks_handler', projects_folder_path=dirname(dirname(dirname(__file__))))
+mocks_folder = join(mh.project_path, 'mocks_handler', 'mocks')
+    
+def test_get_mocks_folder():
+    if exists(mocks_folder):
+        removedirs(mocks_folder)
+    with raises(ValueError) as e:
+        mh.get_mocks_folder()
+    assert 'No mocks folder found in' in str(e.value)
+    makedirs(mocks_folder)
+    assert mh.project_path == dirname(dirname(__file__))
+    assert mh.get_mocks_folder() == join(mh.project_path, 'mocks_handler', 'mocks')
 
-def test_get_mocks_folder(mh:MocksHandler):
-    assert mh.get_mocks_folder() == join(dirname(__file__), 'mocks')
-
-def test_get_filepath(mh:MocksHandler):
+def test_get_filepath():
     bad_filename = 'mocks_asdfasdf.txt'
     with raises(ValueError) as exc_info:
         mh.get_filepath(bad_filename)
@@ -20,7 +24,7 @@ def test_get_filepath(mh:MocksHandler):
     assert str(exc_info.value) == f'File {filepath} not found'
     assert filepath == mh.get_filepath(bad_filename, True)
 
-def test_dump_json_in_mocks(mh:MocksHandler):
+def test_dump_json_in_mocks():
     data = {'a': 2}
     filename = 'mocks_dump'
     mh.dump_in_mocks_folder(filename=filename, data=data)
@@ -33,3 +37,4 @@ def test_dump_json_in_mocks(mh:MocksHandler):
     assert mh.load_from_mocks_folder(filename=filename, extension='txt') == 'ola'
     filepath = join(mh.get_mocks_folder(), f'{filename}.txt')
     remove(filepath)
+    removedirs(mocks_folder)
