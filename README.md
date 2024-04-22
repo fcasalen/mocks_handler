@@ -2,10 +2,7 @@ package to handle mocks folder and its content in your projects, allowing to loa
 
 ```python
 from mocks_handler import MocksHandler
-mh = MocksHandler(project_name='your_project', projects_folder_path='projects_folder')
-
-#if you have a centralized projects folder, you can save it like this and next time you can instantiate MocksHandler without the projects_folder_path argument
-mh.save_projects_folder_path(projects_folder_path='your_projects_folder_path')
+mh = MocksHandler(project_folder_path='your_project_path')
 
 #writing data to a json in mocks_folder of your project
 mh.dump_in_mocks_folder(filename=filename, data=data)

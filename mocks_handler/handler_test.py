@@ -3,8 +3,8 @@ from os.path import dirname, join, exists
 from pytest import raises, fixture
 from .handler import MocksHandler
 
-mh = MocksHandler(project_name='mocks_handler', projects_folder_path=dirname(dirname(dirname(__file__))))
-mocks_folder = join(mh.project_path, 'mocks_handler', 'mocks')
+mh = MocksHandler(project_folder_path=dirname(dirname(__file__)))
+mocks_folder = join(mh.project_folder_path, 'mocks_handler', 'mocks')
     
 def test_get_mocks_folder():
     if exists(mocks_folder):
@@ -13,8 +13,8 @@ def test_get_mocks_folder():
         mh.get_mocks_folder()
     assert 'No mocks folder found in' in str(e.value)
     makedirs(mocks_folder)
-    assert mh.project_path == dirname(dirname(__file__))
-    assert mh.get_mocks_folder() == join(mh.project_path, 'mocks_handler', 'mocks')
+    assert mh.project_folder_path == dirname(dirname(__file__))
+    assert mh.get_mocks_folder() == join(mh.project_folder_path, 'mocks_handler', 'mocks')
 
 def test_get_filepath():
     bad_filename = 'mocks_asdfasdf.txt'
