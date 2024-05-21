@@ -18,15 +18,15 @@ class MocksHandler:
         self.mocks_folder = None
 
     def get_mocks_folder(self) -> str:
-        if self.mocks_folder is not None:
-            return
         for root, dirs, files in walk(self.project_folder_path):
             if 'mocks' in dirs and 'build' not in root:
-                return abspath(join(root, 'mocks'))
+                self.mocks_folder = abspath(join(root, 'mocks'))
+                return self.mocks_folder
         raise ValueError(f'No mocks folder found in {self.project_folder_path}')
 
     def get_filepath(self, filename_with_extension:str, is_dumping:bool = False):
-        filepath = join(self.get_mocks_folder(), filename_with_extension)
+        self.get_mocks_folder()
+        filepath = join(self.mocks_folder, filename_with_extension)
         if not exists(filepath) and not is_dumping:
             raise ValueError(f'File {filepath} not found')
         return filepath
