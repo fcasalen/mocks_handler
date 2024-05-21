@@ -14,7 +14,7 @@ class MocksHandler:
         else:
             if not exists(self.project_folder_path):
                 raise ValueError(f'project_folder_path {project_folder_path} does not exists!')                
-        self.project_folder_path = abspath(project_folder_path)
+        self.project_folder_path = abspath(self.project_folder_path)
         self.mocks_folder = None
 
     def get_mocks_folder(self) -> str:

@@ -1,6 +1,6 @@
 from os import remove, makedirs, removedirs
 from os.path import dirname, join, exists
-from pytest import raises, fixture
+from pytest import raises
 from .handler import MocksHandler
 
 mh = MocksHandler(project_folder_path=dirname(dirname(__file__)))
@@ -38,3 +38,7 @@ def test_dump_json_in_mocks():
     filepath = join(mh.get_mocks_folder(), f'{filename}.txt')
     remove(filepath)
     removedirs(mocks_folder)
+
+
+def test_folder_none():
+    MocksHandler()
