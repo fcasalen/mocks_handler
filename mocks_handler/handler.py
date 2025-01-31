@@ -2,6 +2,7 @@ from os.path import abspath, join, exists, dirname, isdir, basename
 from os import walk, getcwd
 from file_handler import FileHandler
 from pydantic import BaseModel
+from pandas import DataFrame
 
 class SaveFolderArgs(BaseModel):
     folder_path:str
@@ -31,9 +32,9 @@ class MocksHandler:
             raise ValueError(f'File {filepath} not found')
         return filepath
 
-    def dump_in_mocks_folder(self, filename:str, data:dict, extension:str = 'json'):
+    def dump_in_mocks_folder(self, filename:str, data:str|bytes|list|DataFrame|dict[str, str|dict|DataFrame], extension:str = 'json', mode:str = 'w'):
         filepath = self.get_filepath(f'{filename}.{extension}', is_dumping = True)
-        FileHandler.write(file_handler_data={filepath: data})
+        FileHandler.write(file_handler_data={filepath: data}, mode=mode)
 
     def load_from_mocks_folder(self, filename:str, extension:str = 'json', mode:str = 'r'):
         filepath = self.get_filepath(f'{filename}.{extension}')
